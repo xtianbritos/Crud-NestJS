@@ -74,10 +74,37 @@ export class InvoiceService {
         if(invoice.id == null) {
             invoice.id = randomUUID();
         }
+        if(invoice.details == null) {
+            invoice.details = [];
+        }
         invoices.push(invoice);
+        totalCalculator(invoices);
+
         return invoice;
     }
     
+    insertDetail(id: string, invoiceDetail: InvoiceDetailDto): InvoiceDetailDto {
+        if(invoiceDetail.idDetail == null) {
+            invoiceDetail.idDetail = randomUUID();
+        }
+        if(invoiceDetail.product == null) {
+            invoiceDetail.product = 'undefined';
+        }
+        if(invoiceDetail.price == null) {
+            invoiceDetail.price = 0;
+        }
+        if(invoiceDetail.quantity == null) {
+            invoiceDetail.quantity = 1;
+        }
+
+        let index: number = invoices.findIndex(i => i.id == id);
+
+        invoices[index].details.push(invoiceDetail);
+        totalCalculator(invoices);
+        
+        return invoiceDetail;
+    }
+
     // update(id: string, body: CustomerDto): CustomerDto {
 
     //     let index: number = this.customers.findIndex(c => c.id == id);
