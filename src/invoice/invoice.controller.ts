@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Put } from '@nestjs/common';
 import { InvoiceService } from './invoice.service';
 import { InvoiceDto } from './invoice.dto';
 import { InvoiceDetailDto } from './invoice-detail.dto';
@@ -51,4 +51,29 @@ export class InvoiceController {
         return this.service.updateDetail(id, idDetail, body);
     }
 
+    @Patch(':id')
+    @HttpCode(HttpStatus.OK)
+    patchInvoiceById(@Param('id') id: string, @Body() body: InvoiceDto): InvoiceDto {
+        return this.service.patch(id, body);
+    }
+
+    @Patch(':id/:idDetail')
+    @HttpCode(HttpStatus.OK)
+    patchInvoiceDetailById(
+        @Param('id') id: string, @Param('idDetail') idDetail: string,
+        @Body() body: InvoiceDetailDto): InvoiceDetailDto {
+        return this.service.patchDetail(id, idDetail, body);
+    }
+
+    @Delete(':id')
+    @HttpCode(HttpStatus.NO_CONTENT)
+    deleteInvoice(@Param('id') id: string): void {
+        this.service.delete(id);
+    }
+
+    @Delete(':id/:idDetail')
+    @HttpCode(HttpStatus.NO_CONTENT)
+    deleteInvoiceDetail(@Param('id') id: string, @Param('idDetail') idDetail: string): void {
+        this.service.deleteDetail(id, idDetail);
+    }
 }

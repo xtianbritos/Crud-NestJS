@@ -157,26 +157,68 @@ export class InvoiceService {
         return invoices[index].details[indexDetail];
     }
 
-    // patch(id: string, body: CustomerDto): CustomerDto {
-    //     let index: number = this.customers.findIndex(c => c.id == id);
-        
-    //     if(body.name != null) {
-    //         this.customers[index].name = body.name;
-    //     }
-    //     if(body.adress != null) {
-    //         this.customers[index].adress = body.adress;
-    //     }
+    patch(id: string, body: InvoiceDto): InvoiceDto {
+        let index: number = invoices.findIndex(i => i.id == id);
 
-    //     return this.customers[index];
-    // }
-    
-    // delete(id: string): boolean {
-    //     let index: number = this.customers.findIndex(c => c.id == id);
-        
-    //     if(index != -1) {
-    //         this.customers.splice(index, 1);
-    //         return true;
-    //     }
-    //     return false;
-    // }
+        if(body.details != null && body.details.length == invoices[index].details.length) {
+            invoices[index].details.forEach((d, i) => {
+                if(body.details[i].idDetail != null) {
+                    d.idDetail = body.details[i].idDetail;
+                }
+                if(body.details[i].product != null) {
+                    d.product = body.details[i].product;
+                }
+                if(body.details[i].price != null) {
+                    d.price = body.details[i].price;
+                }
+                if(body.details[i].quantity != null) {
+                    d.quantity = body.details[i].quantity;
+                }
+            })
+        }
+        if(body.total != null) {
+            invoices[index].total = body.total;
+        }
+
+        totalCalculator(invoices);
+
+        return invoices[index];
+    }
+
+    patchDetail(id: string, idDetail: string, body: InvoiceDetailDto): InvoiceDetailDto {
+        let index: number = invoices.findIndex(i => i.id == id);
+        let indexDetail: number = invoices[index].details.findIndex(d => d.idDetail == idDetail);
+
+        if(body.product != null) {
+            invoices[index].details[indexDetail].product = body.product;
+        }
+        if(body.price != null) {
+            invoices[index].details[indexDetail].price = body.price;
+        }
+        if(body.quantity != null) {
+            invoices[index].details[indexDetail].quantity = body.quantity;
+        }
+
+        totalCalculator(invoices);
+
+        return invoices[index].details[indexDetail];
+    }
+
+    delete(id: string): void {
+        let index: number = invoices.findIndex(i => i.id == id);
+
+        invoices.splice(index, 1);
+
+        totalCalculator(invoices);
+    }
+
+    deleteDetail(id: string, idDetail: string): void {
+        let index: number = invoices.findIndex(i => i.id == id);
+        let indexDetail: number = invoices[index].details.findIndex(d => d.idDetail == idDetail);
+
+        invoices[index].details.splice(indexDetail, 1);
+
+        totalCalculator(invoices);
+    }
+
 }
