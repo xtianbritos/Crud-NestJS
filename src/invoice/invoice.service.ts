@@ -105,14 +105,57 @@ export class InvoiceService {
         return invoiceDetail;
     }
 
-    // update(id: string, body: CustomerDto): CustomerDto {
+    update(id: string, body: InvoiceDto): InvoiceDto {
+        let index: number = invoices.findIndex(i => i.id == id);
 
-    //     let index: number = this.customers.findIndex(c => c.id == id);
-    //     this.customers[index].name = body.name;
-    //     this.customers[index].adress = body.adress;
+        if(body.details == null) {
+            body.details = [];
+        }else{
+            body.details.forEach(d => {
+                if(d.idDetail == null) {
+                    d.idDetail = randomUUID();
+                }
+                if(d.product == null) {
+                    d.product = 'undefined';
+                }
+                if(d.price == null) {
+                    d.price = 0;
+                }
+                if(d.quantity == null) {
+                    d.quantity = 1;
+                }
+            })
+        }
+        invoices[index].details = body.details;
+        invoices[index].total = body.total;
+
+        totalCalculator(invoices);
         
-    //     return this.customers[index];
-    // }
+        return invoices[index];
+    }
+
+    updateDetail(id: string, idDetail: string, body: InvoiceDetailDto): InvoiceDetailDto {
+        let index: number = invoices.findIndex(i => i.id == id);
+        let indexDetail: number = invoices[index].details.findIndex(d => d.idDetail == idDetail)
+
+        if(body.product == null) {
+            body.product = 'undefined';
+        }
+        if(body.price == null) {
+            body.price = 0;
+        }
+        if(body.quantity == null) {
+            body.quantity = 1;
+        }
+
+        invoices[index].details[indexDetail].product = body.product;
+        invoices[index].details[indexDetail].price = body.price;
+        invoices[index].details[indexDetail].quantity = body.quantity;
+
+        totalCalculator(invoices);
+        
+        return invoices[index].details[indexDetail];
+    }
 
     // patch(id: string, body: CustomerDto): CustomerDto {
     //     let index: number = this.customers.findIndex(c => c.id == id);

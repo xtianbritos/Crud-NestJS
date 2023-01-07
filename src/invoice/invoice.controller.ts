@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Put } from '@nestjs/common';
 import { InvoiceService } from './invoice.service';
 import { InvoiceDto } from './invoice.dto';
 import { InvoiceDetailDto } from './invoice-detail.dto';
@@ -35,6 +35,20 @@ export class InvoiceController {
     @HttpCode(HttpStatus.CREATED)
     postInvoiceDetail(@Param('id') id: string, @Body() body: InvoiceDetailDto): InvoiceDetailDto {
         return this.service.insertDetail(id, body);
+    }
+
+    @Put(':id')
+    @HttpCode(HttpStatus.OK)
+    putInvoiceById(@Param('id') id: string, @Body() body: InvoiceDto): InvoiceDto {
+        return this.service.update(id, body);
+    }
+
+    @Put(':id/:idDetail')
+    @HttpCode(HttpStatus.OK)
+    putInvoiceDetailById(
+        @Param('id') id: string, @Param('idDetail') idDetail: string,
+        @Body() body: InvoiceDetailDto): InvoiceDetailDto {
+        return this.service.updateDetail(id, idDetail, body);
     }
 
 }
